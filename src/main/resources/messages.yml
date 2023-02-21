@@ -1,0 +1,15 @@
+# messages.yml for WaterLinker version 1.0
+# For more information on how to set up this configuration file and other
+# languages, visit https://docs.waterbroodje.nl/
+# Placeholders from both WaterLinker and PlaceholderAPI are working in this config,
+# read the documentation for more information about placeholders.
+
+errors:
+  only-humans: "&cOnly humans can execute this command!"
+  already-linked: "&cYour Minecraft account is already linked to a Discord account. Type /link info for more information such as the account you are linked to."
+
+success:
+  linked-success: "&aYou are now linked!"
+
+normal:
+  code: "&aHere's your personal code: &7%code%&a. Remember not to share this code with anyone, not even your friends!"

@@ -1,55 +1,52 @@
 package me.waterbroodje.waterlinker.utilities;
 
-import java.io.IOException;
-import java.net.ServerSocket;
-import java.net.Socket;
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
+import me.waterbroodje.waterlinker.WaterLinker;
+import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerQuitEvent;
 
-public class DiscordLinkManager {
-    private final String clientId;
-    private final String clientSecret;
-    private final String redirectUri;
-    private final int redirectPort;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Random;
+import java.util.UUID;
 
-    public DiscordLinkManager(String clientId, String clientSecret, String redirectUri, int redirectPort) {
-        this.clientId = clientId;
-        this.clientSecret = clientSecret;
-        this.redirectUri = redirectUri;
-        this.redirectPort = redirectPort;
+public class DiscordLinkManager implements Listener {
+    private final Map<String, UUID> codes = new HashMap<>();
+
+    public DiscordLinkManager(WaterLinker plugin) {
+        Bukkit.getPluginManager().registerEvents(this, plugin);
     }
 
-    public String createAuthUrl() {
-        String encodedRedirectUri = URLEncoder.encode(redirectUri, StandardCharsets.UTF_8);
-        return String.format("https://discord.com/api/oauth2/authorize?client_id=%s&redirect_uri=%s&response_type=code&scope=identify", clientId, encodedRedirectUri);
+    public String createAuthenticationCode(Player player) {
+        Random r = new Random();
+        int low = 100000;
+        int high = 999999;
+        String result = String.valueOf(r.nextInt(high-low) + low);
+
+        codes.put(result, player.getUniqueId());
+        return result;
     }
 
-    public String getAccessToken(String authCode) throws IOException {
-        String encodedRedirectUri = URLEncoder.encode(redirectUri, StandardCharsets.UTF_8);
-        String body = String.format("client_id=%s&client_secret=%s&grant_type=authorization_code&code=%s&redirect_uri=%s&scope=identify",
-                                    clientId, clientSecret, authCode, encodedRedirectUri);
-        String response = HttpUtil.post("https://discord.com/api/oauth2/token", body);
-        return JsonUtil.getString(response, "access_token");
+    public boolean validate(String code) {
+        return codes.containsKey(code);
     }
 
-    public void startRedirectListener(AccessTokenCallback callback) {
-        try {
-            ServerSocket serverSocket = new ServerSocket(redirectPort);
-            Socket socket = serverSocket.accept();
-            String request = HttpUtil.readRequest(socket.getInputStream());
-            String authCode = HttpUtil.getParameter(request, "code");
-            String accessToken = getAccessToken(authCode);
-            callback.onAccessToken(accessToken);
-            String response = "HTTP/1.1 200 OK\r\nContent-Length: 2\r\n\r\nOK";
-            socket.getOutputStream().write(response.getBytes());
-            socket.close();
-            serverSocket.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    public void remove(String code) {
+        codes.remove(code);
     }
 
-    public interface AccessTokenCallback {
-        void onAccessToken(String accessToken);
+    public Player getPlayerFromCode(String code) {
+        return Bukkit.getPlayer(codes.get(code));
+    }
+
+    public void removeCode(UUID uuid) {
+        codes.entrySet().removeIf(entry -> entry.getValue().equals(uuid));
+    }
+
+    @EventHandler
+    private void onPlayerQuit(PlayerQuitEvent event) {
+        removeCode(event.getPlayer().getUniqueId());
     }
 }
