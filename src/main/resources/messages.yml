@@ -7,6 +7,7 @@
 errors:
   only-humans: "&cOnly humans can execute this command!"
   already-linked: "&cYour Minecraft account is already linked to a Discord account. Type /link info for more information such as the account you are linked to."
+  not-linked: "&cYou are not linked!"
 
 success:
   linked-success: "&aYou are now linked!"

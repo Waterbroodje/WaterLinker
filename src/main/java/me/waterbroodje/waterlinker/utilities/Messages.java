@@ -23,6 +23,7 @@ public class Messages {
     public enum Message {
         ERROR_ONLY_HUMANS("error.only-humans", "&cOnly humans can execute this command!"),
         ERROR_ALREADY_LINKED("error.already-linked", "&cYour Minecraft account is already linked to a Discord account. Type /link info for more information such as the account you are linked to."),
+        ERROR_NOT_LINKED("error.not-linked", "&cYou are not linked!"),
         SUCCESS_LINKED_SUCCESS("success.linked-success", "&aYou are now linked!"),
         NORMAL_CODE("normal.code", "&aHere's your personal code: &7%code%&a. Please type `/link <code>` in our discord server, and your account will be linked. Remember not to share this code with anyone, not even your friends!");
 
