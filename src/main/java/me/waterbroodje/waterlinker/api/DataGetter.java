@@ -22,7 +22,7 @@ public class DataGetter {
 
     /**
      * Get information from linked Player
-     * @param linkDataType data you want to retrieve
+     * @param linkDataType data you want to receive
      * @param uuid the uuid of the player
      * @return Object you want to retrieve
      */
@@ -56,7 +56,7 @@ public class DataGetter {
 
     /**
      * Get information from linked Player
-     * @param linkDataType data you want to retrieve
+     * @param linkDataType data you want to receive
      * @param player the player
      * @return Object you want to retrieve
      */
