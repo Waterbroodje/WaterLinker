@@ -9,6 +9,7 @@ import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEve
 import net.dv8tion.jda.api.hooks.EventListener;
 import net.dv8tion.jda.api.interactions.commands.OptionMapping;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 
 import java.awt.*;
 import java.time.Instant;
@@ -22,7 +23,7 @@ public class DiscordCommandListener implements EventListener {
     }
 
     @Override
-    public void onEvent(GenericEvent event) {
+    public void onEvent(@NotNull GenericEvent event) {
         if (event instanceof SlashCommandInteractionEvent slashCommandInteractionEvent) {
             if (slashCommandInteractionEvent.getName().equalsIgnoreCase("link")) {
                 DiscordLinkManager discordLinkManager = plugin.getDiscordLinkManager();
@@ -32,20 +33,24 @@ public class DiscordCommandListener implements EventListener {
                     Player player = discordLinkManager.getPlayerFromCode(code);
                     discordLinkManager.remove(code);
 
-                    plugin.getDatabaseExecution().linkAccount(player.getUniqueId(), String.valueOf(slashCommandInteractionEvent.getUser().getIdLong()), Date.from(Instant.now()));
+                    if (plugin.getDatabaseExecution().linkAccount(player.getUniqueId(), String.valueOf(slashCommandInteractionEvent.getUser().getIdLong()), Date.from(Instant.now()))) {
+                        EmbedBuilder embedBuilder = new EmbedBuilder()
+                                .setColor(Color.GREEN)
+                                .setTitle("Successfully Linked")
+                                .addField("Minecraft Account", player.getName(), true)
+                                .addField("Discord Account", slashCommandInteractionEvent.getUser().getAsMention(), true)
+                                .setFooter("Want to unlink? Type the command `/unlink` here.");
 
-                    EmbedBuilder embedBuilder = new EmbedBuilder()
-                            .setColor(Color.GREEN)
-                            .setTitle("Successfully Linked")
-                            .addField("Minecraft Account", player.getName(), true)
-                            .addField("Discord Account", slashCommandInteractionEvent.getUser().getAsMention(), true)
-                            .setFooter("Want to unlink? Type the command `/unlink` here.");
-
-                    slashCommandInteractionEvent.replyEmbeds(embedBuilder.build())
-                            .setEphemeral(true)
-                            .queue();
-
-                    player.sendMessage(Messages.Message.SUCCESS_LINKED_SUCCESS.get());
+                        slashCommandInteractionEvent.replyEmbeds(embedBuilder.build())
+                                .setEphemeral(true)
+                                .queue();
+                        player.sendMessage(Messages.Message.SUCCESS_LINKED_SUCCESS.get());
+                    } else {
+                        player.sendMessage(Messages.Message.ERROR_SOMETHING_WENT_WRONG.get());
+                        slashCommandInteractionEvent.reply(Messages.Message.ERROR_SOMETHING_WENT_WRONG.getBlanco())
+                                .setEphemeral(true)
+                                .queue();
+                    }
                 }
             }
         }
