@@ -11,10 +11,10 @@ import me.waterbroodje.waterlinker.placeholders.PlaceholderExpansion;
 import me.waterbroodje.waterlinker.utilities.Configuration;
 import me.waterbroodje.waterlinker.utilities.DiscordLinkManager;
 import me.waterbroodje.waterlinker.utilities.Messages;
+import me.waterbroodje.waterlinker.utilities.RolesHelper;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.Permission;
-import net.dv8tion.jda.api.hooks.IEventManager;
 import net.dv8tion.jda.api.interactions.commands.DefaultMemberPermissions;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.build.Commands;
@@ -27,6 +27,7 @@ public final class WaterLinker extends JavaPlugin {
     private Database database;
     private DatabaseExecution databaseExecution;
     private DiscordLinkManager discordLinkManager;
+    private RolesHelper rolesHelper;
     private JDA jda;
     private FileConfiguration messagesConfig;
 
@@ -44,6 +45,7 @@ public final class WaterLinker extends JavaPlugin {
                 .build();
         this.database.connect();
         this.databaseExecution = new DatabaseExecution(this.database);
+        this.databaseExecution.createLinkedAccountsTable();
 
         PlaceholderExpansion placeholders = new PlaceholderExpansion(this);
         if (placeholders.register()) {
@@ -52,22 +54,28 @@ public final class WaterLinker extends JavaPlugin {
             getLogger().log(Level.WARNING, "&7(&6W&7) &cFailed to register PAPI placeholders.");
         }
 
-        this.messagesConfig = new Configuration("", this)
+        this.messagesConfig = new Configuration("messages", this)
                 .create()
                 .getCustomConfig();
         Messages.init(this);
 
-        this.discordLinkManager = new DiscordLinkManager(this);
-
-        this.jda = JDABuilder.createDefault(this.getConfig().getString("discord-token"))
+        this.jda = JDABuilder.createDefault(this.getConfig().getString("discord.token"))
                 .addEventListeners(new DiscordCommandListener(this))
                 .build();
+
+        try {
+            jda.awaitReady();
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+
+        this.discordLinkManager = new DiscordLinkManager(this);
 
         jda.updateCommands().addCommands(
                 Commands.slash("link", "Link your Discord account with Minecraft")
                         .setDefaultPermissions(DefaultMemberPermissions.enabledFor(Permission.MESSAGE_SEND))
                         .setGuildOnly(this.getConfig().getBoolean("discord.guild"))
-                        .addOption(OptionType.NUMBER, "code", "The code you got in the Minecraft server", true),
+                        .addOption(OptionType.STRING, "code", "The code you got in the Minecraft server", true),
                 Commands.slash("unlink", "Unlink your Discord account")
                         .setDefaultPermissions(DefaultMemberPermissions.enabledFor(Permission.MESSAGE_SEND))
                         .setGuildOnly(this.getConfig().getBoolean("discord.guild"))
@@ -77,6 +85,9 @@ public final class WaterLinker extends JavaPlugin {
         getCommand("unlink").setExecutor(new UnlinkCommand(this));
 
         DataGetter.setWaterLinker(this);
+
+        this.rolesHelper = new RolesHelper(this);
+        rolesHelper.loopThroughRoles();
     }
 
     @Override

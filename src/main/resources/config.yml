@@ -15,12 +15,13 @@ database:
 discord:
   token: "DISCORD-TOKEN"
   guild: true # If set to true, the command only works inside a guild.
-
+  guild-id: "000000000000000000"
 
 # The roles you want to give in the Discord server when a user has a specific permission.
 roles:
   enabled: false
   override: true # Highest permission in this list will be applied to the user.
+  update: true # If enabled, the plugin will check every 5 minutes all the users that are only and see if they need to get a role.
   permissions:
     rank.mvp: "000000000000000000"
     rank.vip: "000000000000000000"
