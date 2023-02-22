@@ -2,6 +2,7 @@ package me.waterbroodje.waterlinker.api;
 
 import me.waterbroodje.waterlinker.WaterLinker;
 import me.waterbroodje.waterlinker.database.DatabaseExecution;
+import me.waterbroodje.waterlinker.utilities.Messages;
 import net.dv8tion.jda.api.entities.User;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
