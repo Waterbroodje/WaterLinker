@@ -13,25 +13,29 @@ public class DatabaseExecution {
         this.dataSource = database.getDataSource();
     }
 
-    public void linkAccount(UUID uuid, String discordId, Date linkDate) {
+    public boolean linkAccount(UUID uuid, String discordId, Date linkDate) {
         try (Connection connection = dataSource.getConnection();
              PreparedStatement statement = connection.prepareStatement("INSERT INTO linkedAccounts (uuid, discordId, linkDate) VALUES (?, ?, ?)")) {
             statement.setString(1, uuid.toString());
             statement.setString(2, discordId);
             statement.setTimestamp(3, new Timestamp(linkDate.getTime()));
             statement.executeUpdate();
+            return true;
         } catch (SQLException e) {
             e.printStackTrace();
+            return false;
         }
     }
 
-    public void unlinkAccount(UUID uuid) {
+    public boolean unlinkAccount(UUID uuid) {
         try (Connection connection = dataSource.getConnection();
              PreparedStatement statement = connection.prepareStatement("DELETE FROM linkedAccounts WHERE uuid = ?")) {
             statement.setString(1, uuid.toString());
             statement.executeUpdate();
+            return true;
         } catch (SQLException e) {
             e.printStackTrace();
+            return false;
         }
     }
 
@@ -67,12 +71,14 @@ public class DatabaseExecution {
         }
     }
 
-    public void createLinkedAccountsTable() {
+    public boolean createLinkedAccountsTable() {
         try (Connection connection = dataSource.getConnection();
              PreparedStatement statement = connection.prepareStatement("CREATE TABLE IF NOT EXISTS linkedAccounts (uuid VARCHAR(36) NOT NULL, discordId VARCHAR(18) NOT NULL, linkDate TIMESTAMP NOT NULL, PRIMARY KEY (uuid))")) {
             statement.executeUpdate();
+            return true;
         } catch (SQLException e) {
             e.printStackTrace();
+            return false;
         }
     }
 
