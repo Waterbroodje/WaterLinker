@@ -1,6 +1,6 @@
 
 # WaterLinker
-WaterLinker provides an easy way for players to link their Minecraft and Discord accounts. Everything is manageable, controllable, and customizable, while also being optimized for server performance."
+WaterLinker provides an easy way for players to link their Minecraft and Discord accounts. Everything is manageable, controllable, and customizable, while also being optimized for server performance.
 
 For more information, and to learn how to use this plugin as an administrator, please visit https://docs.waterbroodje.nl/
 ## API
