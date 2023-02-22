@@ -19,9 +19,11 @@ public class UnlinkCommand implements CommandExecutor {
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (sender instanceof Player player) {
             if (plugin.getDatabaseExecution().isLinked(player.getUniqueId())) {
-                DiscordLinkManager linkManager = plugin.getDiscordLinkManager();
-                String code = linkManager.createAuthenticationCode(player);
-                player.sendMessage(Messages.Message.NORMAL_CODE.get(code));
+                if (plugin.getDatabaseExecution().unlinkAccount(player.getUniqueId())) {
+                    player.sendMessage(Messages.Message.SUCCESS_UNLINK_SUCCESS.get());
+                } else {
+                    player.sendMessage(Messages.Message.ERROR_SOMETHING_WENT_WRONG.get());
+                }
             } else {
                 player.sendMessage(Messages.Message.ERROR_NOT_LINKED.get());
             }

@@ -1,7 +1,9 @@
 package me.waterbroodje.waterlinker;
 
 import me.waterbroodje.waterlinker.api.DataGetter;
+import me.waterbroodje.waterlinker.api.WaterLinkerAPI;
 import me.waterbroodje.waterlinker.commands.LinkCommand;
+import me.waterbroodje.waterlinker.commands.UnlinkCommand;
 import me.waterbroodje.waterlinker.database.Database;
 import me.waterbroodje.waterlinker.database.DatabaseExecution;
 import me.waterbroodje.waterlinker.discord.DiscordCommandListener;
@@ -72,6 +74,7 @@ public final class WaterLinker extends JavaPlugin {
                 ).queue();
 
         getCommand("link").setExecutor(new LinkCommand(this));
+        getCommand("unlink").setExecutor(new UnlinkCommand(this));
 
         DataGetter.setWaterLinker(this);
     }
