@@ -2,9 +2,10 @@ package me.waterbroodje.waterlinker.placeholders.global;
 
 import me.waterbroodje.waterlinker.WaterLinker;
 import me.waterbroodje.waterlinker.placeholders.Placeholder;
+import net.dv8tion.jda.api.JDA;
 import org.bukkit.OfflinePlayer;
 
-import java.text.SimpleDateFormat;
+import java.util.Objects;
 import java.util.regex.Matcher;
 
 public class DiscordName extends Placeholder {
@@ -20,7 +21,7 @@ public class DiscordName extends Placeholder {
 
     @Override
     public String parse(Matcher matcher, OfflinePlayer p) {
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
-        return dateFormat.format(plugin.getDatabaseExecution().getLinkDate(p.getUniqueId()));
+        JDA jda = plugin.getJda();
+        return Objects.requireNonNull(jda.getUserById(plugin.getDatabaseExecution().getDiscordId(p.getUniqueId()))).getName();
     }
 }

@@ -2,6 +2,7 @@ package me.waterbroodje.waterlinker.commands;
 
 import me.waterbroodje.waterlinker.WaterLinker;
 import me.waterbroodje.waterlinker.utilities.DiscordLinkManager;
+import me.waterbroodje.waterlinker.utilities.Messages;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -9,7 +10,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 public class LinkCommand implements CommandExecutor {
-    private WaterLinker plugin;
+    private final WaterLinker plugin;
 
     public LinkCommand(WaterLinker plugin) {
         this.plugin = plugin;
@@ -17,17 +18,16 @@ public class LinkCommand implements CommandExecutor {
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        if (sender instanceof Player) {
-            Player player = (Player) sender;
+        if (sender instanceof Player player) {
             if (!plugin.getDatabaseExecution().isLinked(player.getUniqueId())) {
                 DiscordLinkManager linkManager = plugin.getDiscordLinkManager();
                 String code = linkManager.createAuthenticationCode(player);
-                player.sendMessage(ChatColor.GREEN + "Your personal code: " + code + ". Please type `/link <code>` in our discord server, and your account will be linked.");
+                player.sendMessage(Messages.Message.NORMAL_CODE.get(code));
             } else {
-                player.sendMessage(ChatColor.RED + "Your Minecraft account is already linked to a Discord account. Type /link info for more information such as the account you are linked to.");
+                player.sendMessage(Messages.Message.ERROR_ALREADY_LINKED.get());
             }
         } else {
-            sender.sendMessage(ChatColor.RED + "Only humans can execute this command");
+            sender.sendMessage(Messages.Message.ERROR_ONLY_HUMANS.get());
         }
 
         return true;

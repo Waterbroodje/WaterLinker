@@ -5,7 +5,6 @@ import me.waterbroodje.waterlinker.placeholders.Placeholder;
 import net.dv8tion.jda.api.JDA;
 import org.bukkit.OfflinePlayer;
 
-import java.text.SimpleDateFormat;
 import java.util.Objects;
 import java.util.regex.Matcher;
 

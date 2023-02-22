@@ -11,7 +11,6 @@ import net.dv8tion.jda.api.interactions.commands.OptionMapping;
 import org.bukkit.entity.Player;
 
 import java.awt.*;
-import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.util.Date;
 
@@ -24,9 +23,7 @@ public class DiscordCommandListener implements EventListener {
 
     @Override
     public void onEvent(GenericEvent event) {
-        if (event instanceof SlashCommandInteractionEvent) {
-            SlashCommandInteractionEvent slashCommandInteractionEvent = (SlashCommandInteractionEvent) event;
-
+        if (event instanceof SlashCommandInteractionEvent slashCommandInteractionEvent) {
             if (slashCommandInteractionEvent.getName().equalsIgnoreCase("link")) {
                 DiscordLinkManager discordLinkManager = plugin.getDiscordLinkManager();
                 String code = slashCommandInteractionEvent.getOption("code", OptionMapping::getAsString);

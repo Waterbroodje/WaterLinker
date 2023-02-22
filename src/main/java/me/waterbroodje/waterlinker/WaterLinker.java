@@ -1,5 +1,7 @@
 package me.waterbroodje.waterlinker;
 
+import me.waterbroodje.waterlinker.api.DataGetter;
+import me.waterbroodje.waterlinker.commands.LinkCommand;
 import me.waterbroodje.waterlinker.database.Database;
 import me.waterbroodje.waterlinker.database.DatabaseExecution;
 import me.waterbroodje.waterlinker.discord.DiscordCommandListener;
@@ -17,7 +19,6 @@ import net.dv8tion.jda.api.interactions.commands.build.Commands;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.io.File;
 import java.util.logging.Level;
 
 public final class WaterLinker extends JavaPlugin {
@@ -69,6 +70,10 @@ public final class WaterLinker extends JavaPlugin {
                         .setDefaultPermissions(DefaultMemberPermissions.enabledFor(Permission.MESSAGE_SEND))
                         .setGuildOnly(this.getConfig().getBoolean("discord.guild"))
                 ).queue();
+
+        getCommand("link").setExecutor(new LinkCommand(this));
+
+        DataGetter.setWaterLinker(this);
     }
 
     @Override
