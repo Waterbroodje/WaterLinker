@@ -3,7 +3,9 @@ package me.waterbroodje.waterlinker.database;
 import com.zaxxer.hikari.HikariDataSource;
 
 import java.sql.*;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 
 public class DatabaseExecution {
@@ -54,6 +56,56 @@ public class DatabaseExecution {
             return null;
         }
     }
+
+    public UUID getUUID(String discordId) {
+        try (Connection connection = dataSource.getConnection();
+             PreparedStatement statement = connection.prepareStatement("SELECT uuid FROM linkedAccounts WHERE discordId = ?")) {
+            statement.setString(1, discordId);
+            ResultSet resultSet = statement.executeQuery();
+            if (resultSet.next()) {
+                String uuidStr = resultSet.getString("uuid");
+                return UUID.fromString(uuidStr);
+            } else {
+                return null;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+
+    public List<UUID> getAllUUIDs() {
+        List<UUID> uuids = new ArrayList<>();
+        try (Connection connection = dataSource.getConnection();
+             PreparedStatement statement = connection.prepareStatement("SELECT uuid FROM linkedAccounts");
+             ResultSet resultSet = statement.executeQuery()) {
+            while (resultSet.next()) {
+                String uuidStr = resultSet.getString("uuid");
+                UUID uuid = UUID.fromString(uuidStr);
+                uuids.add(uuid);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return uuids;
+    }
+
+    public List<String> getAllIDs() {
+        List<String> ids = new ArrayList<>();
+        try (Connection connection = dataSource.getConnection();
+             PreparedStatement statement = connection.prepareStatement("SELECT discordId FROM linkedAccounts");
+             ResultSet resultSet = statement.executeQuery()) {
+            while (resultSet.next()) {
+                String id = resultSet.getString("discordId");
+                ids.add(id);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return ids;
+    }
+
 
     public Date getLinkDate(UUID uuid) {
         try (Connection connection = dataSource.getConnection();
