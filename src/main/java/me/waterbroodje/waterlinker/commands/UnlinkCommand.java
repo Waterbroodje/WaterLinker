@@ -1,8 +1,7 @@
 package me.waterbroodje.waterlinker.commands;
 
 import me.waterbroodje.waterlinker.WaterLinker;
-import me.waterbroodje.waterlinker.utilities.DiscordLinkManager;
-import me.waterbroodje.waterlinker.utilities.Messages;
+import me.waterbroodje.waterlinker.common.Messages;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;

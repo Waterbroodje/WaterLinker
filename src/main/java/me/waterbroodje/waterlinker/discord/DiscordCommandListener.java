@@ -1,8 +1,8 @@
 package me.waterbroodje.waterlinker.discord;
 
 import me.waterbroodje.waterlinker.WaterLinker;
-import me.waterbroodje.waterlinker.utilities.DiscordLinkManager;
-import me.waterbroodje.waterlinker.utilities.Messages;
+import me.waterbroodje.waterlinker.common.DiscordLinkManager;
+import me.waterbroodje.waterlinker.common.Messages;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.events.GenericEvent;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
@@ -44,6 +44,9 @@ public class DiscordCommandListener implements EventListener {
                         slashCommandInteractionEvent.replyEmbeds(embedBuilder.build())
                                 .setEphemeral(true)
                                 .queue();
+
+                        plugin.getRolesHelper().assignRoles(player);
+
                         player.sendMessage(Messages.Message.SUCCESS_LINKED_SUCCESS.get());
                     } else {
                         player.sendMessage(Messages.Message.ERROR_SOMETHING_WENT_WRONG.get());

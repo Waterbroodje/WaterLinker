@@ -1,4 +1,4 @@
-package me.waterbroodje.waterlinker.utilities;
+package me.waterbroodje.waterlinker.common;
 
 import me.waterbroodje.waterlinker.WaterLinker;
 import org.bukkit.Bukkit;

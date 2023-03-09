@@ -1,4 +1,4 @@
-package me.waterbroodje.waterlinker.utilities;
+package me.waterbroodje.waterlinker.common;
 
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
