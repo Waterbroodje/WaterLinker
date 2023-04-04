@@ -41,13 +41,13 @@ public class DatabaseExecution {
         }
     }
 
-    public String getDiscordId(UUID uuid) {
+    public Long getDiscordId(UUID uuid) {
         try (Connection connection = dataSource.getConnection();
              PreparedStatement statement = connection.prepareStatement("SELECT discordId FROM linkedAccounts WHERE uuid = ?")) {
             statement.setString(1, uuid.toString());
             ResultSet resultSet = statement.executeQuery();
             if (resultSet.next()) {
-                return resultSet.getString("discordId");
+                return resultSet.getLong("discordId");
             } else {
                 return null;
             }

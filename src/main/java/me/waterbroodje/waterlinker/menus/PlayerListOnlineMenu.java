@@ -17,12 +17,12 @@ import org.bukkit.inventory.ItemStack;
 
 import java.util.Objects;
 
-public class PlayerListAllMenu {
+public class PlayerListOnlineMenu {
     private final ScrollingGui gui;
     private final Player player;
     private final WaterLinker waterLinker = WaterLinker.getInstance();
 
-    public PlayerListAllMenu(Player player) {
+    public PlayerListOnlineMenu(Player player) {
         this.gui = Gui.scrolling()
                 .title(Component.text("All Linked Players"))
                 .rows(6)
@@ -43,7 +43,7 @@ public class PlayerListAllMenu {
                 .asGuiItem()
         );
 
-        this.waterLinker.getProfileCache().getAllProfileList().forEach(profile -> {
+        this.waterLinker.getProfileCache().getAllOnlineProfileList().forEach(profile -> {
             OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(profile.getUuid());
             StringBuilder roles = new StringBuilder();
             for (int i = 0; i < profile.getRoleList().size(); i++) {
@@ -63,9 +63,11 @@ public class PlayerListAllMenu {
                             ChatColor.GRAY + "Online Status: " + profile.getOnlineStatusColored(),
                             ChatColor.GRAY + "Creation Date: " + ChatColor.GREEN + profile.getCreationDate(),
                             ChatColor.GRAY + "Join Date: " + ChatColor.GREEN + profile.getJoinDate(),
+                            ChatColor.GRAY + "Online On: " + ChatColor.GREEN + profile.getClientTypeList().stream().findFirst().get().getKey(),
                             ChatColor.GRAY + " ",
                             ChatColor.DARK_GRAY + "Roles",
-                            roles.toString()).asGuiItem();
+                            roles.toString())
+                    .asGuiItem();
             this.gui.addItem(guiItem);
         });
     }

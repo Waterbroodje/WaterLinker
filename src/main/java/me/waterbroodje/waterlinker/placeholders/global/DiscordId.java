@@ -19,6 +19,6 @@ public class DiscordId extends Placeholder {
 
     @Override
     public String parse(Matcher matcher, OfflinePlayer p) {
-        return plugin.getDatabaseExecution().getDiscordId(p.getUniqueId());
+        return plugin.getDatabaseExecution().getDiscordId(p.getUniqueId()).toString();
     }
 }

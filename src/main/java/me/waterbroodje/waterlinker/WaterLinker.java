@@ -2,6 +2,7 @@ package me.waterbroodje.waterlinker;
 
 import me.waterbroodje.waterlinker.api.DataGetter;
 import me.waterbroodje.waterlinker.commands.LinkCommand;
+import me.waterbroodje.waterlinker.commands.LinkedPlayersCommand;
 import me.waterbroodje.waterlinker.commands.UnlinkCommand;
 import me.waterbroodje.waterlinker.database.Database;
 import me.waterbroodje.waterlinker.database.DatabaseExecution;
@@ -19,6 +20,7 @@ import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.interactions.commands.DefaultMemberPermissions;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.build.Commands;
+import net.dv8tion.jda.api.requests.GatewayIntent;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -34,6 +36,8 @@ public final class WaterLinker extends JavaPlugin {
     private Guild guild;
     private ProfileCache profileCache;
 
+    public static WaterLinker instance;
+
     @Override
     public void onEnable() {
         this.saveDefaultConfig();
@@ -47,16 +51,17 @@ public final class WaterLinker extends JavaPlugin {
                 .database(config.getString("database.database"))
                 .build();
         this.database.connect();
+
         this.databaseExecution = new DatabaseExecution(this.database);
         this.databaseExecution.createLinkedAccountsTable();
 
-        this.profileCache = new ProfileCache();
+        instance = this;
 
         PlaceholderExpansion placeholders = new PlaceholderExpansion(this);
         if (placeholders.register()) {
-            getLogger().log(Level.INFO, "&7(&6W&7) &fPAPI placeholders successfully registered!.");
+            getLogger().log(Level.INFO, "(W) PAPI placeholders successfully registered!.");
         } else {
-            getLogger().log(Level.WARNING, "&7(&6W&7) &cFailed to register PAPI placeholders.");
+            getLogger().log(Level.WARNING, "(W) Failed to register PAPI placeholders.");
         }
 
         this.messagesConfig = new Configuration("messages", this)
@@ -66,6 +71,7 @@ public final class WaterLinker extends JavaPlugin {
 
         this.jda = JDABuilder.createDefault(this.getConfig().getString("discord.token"))
                 .addEventListeners(new DiscordCommandListener(this))
+                .enableIntents(GatewayIntent.GUILD_MEMBERS)
                 .build();
 
         try {
@@ -73,6 +79,8 @@ public final class WaterLinker extends JavaPlugin {
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
+
+        this.profileCache = new ProfileCache();
 
         this.discordLinkManager = new DiscordLinkManager(this);
 
@@ -88,6 +96,7 @@ public final class WaterLinker extends JavaPlugin {
 
         getCommand("link").setExecutor(new LinkCommand(this));
         getCommand("unlink").setExecutor(new UnlinkCommand(this));
+        getCommand("linkedplayers").setExecutor(new LinkedPlayersCommand());
 
         DataGetter.setWaterLinker(this);
 
@@ -132,4 +141,10 @@ public final class WaterLinker extends JavaPlugin {
     public ProfileCache getProfileCache() {
         return profileCache;
     }
+
+    public static WaterLinker getInstance() {
+        return instance;
+    }
+
+    //make a method to
 }

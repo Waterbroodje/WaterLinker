@@ -34,7 +34,7 @@ public class RolesHelper {
                 Bukkit.getOnlinePlayers().stream()
                         .filter(player -> databaseExecution.isLinked(player.getUniqueId()))
                         .forEach(player -> {
-                            Member member = guild.getMemberById(Long.parseLong(databaseExecution.getDiscordId(player.getUniqueId())));
+                            Member member = guild.getMemberById(databaseExecution.getDiscordId(player.getUniqueId()));
 
                             if (member == null) {
                                 return;
@@ -65,7 +65,7 @@ public class RolesHelper {
                 return;
             }
 
-            Member member = guild.getMemberById(Long.parseLong(databaseExecution.getDiscordId(player.getUniqueId())));
+            Member member = guild.getMemberById(databaseExecution.getDiscordId(player.getUniqueId()));
 
             if (member == null) {
                 return;
